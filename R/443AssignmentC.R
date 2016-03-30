@@ -103,5 +103,6 @@ mse10 <- sum10/num
 # MSEs for steps 1,2,5,10 isolated
 mylist <- mse10[c(1,2,5,10)]
 
+# Output
 mylist
 table(pqVals)
