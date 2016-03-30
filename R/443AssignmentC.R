@@ -1,6 +1,6 @@
 # 443 Assignment
 
-numb = 100
+numb = 30
 
 arch.sim <- function(n, omega, alpha1, sigma)
   {
@@ -11,8 +11,6 @@ arch.sim <- function(n, omega, alpha1, sigma)
     }
   out
   }
-
-
 
 newARCH <- function(n,om,alp)
 {
@@ -28,7 +26,7 @@ AICmatrix <- function(n,pstart,pfinish,qstart,qfinish)
   for (p in 1:numb)
   {
     # Generating simulated data from model 
-    model[[p]] <- newARCH(n,1,1)
+    model[[p]] <- newARCH(n,1,0.85)
     mat[[p]] <- matrix(nrow = pfinish + 1,ncol = qfinish + 1)
     dimnames(mat[[p]]) <- list(c(pstart:pfinish),c(qstart:qfinish))
     
@@ -49,7 +47,7 @@ AICmatrix <- function(n,pstart,pfinish,qstart,qfinish)
     qval <- which(mat[[p]] == min(mat[[p]]), arr.ind = TRUE)[2] - 1
     
     # Predicting model[[p]] for 10 steps ahead
-    forecast10[p] <- predict(arima(model[[p]][1:(n-10)], order=c(pval,0,qval)),n.ahead=10)
+    forecast10[p] <- predict(arima(model[[p]][1:(n-10)], order=c(pval,0,qval), method="ML"),n.ahead=10)
   }
   
   out <- list(output,pqValues,forecast10,model)
@@ -78,4 +76,5 @@ for (i in 1:numb)
 }
 
 mse10 <- sum10/numb
+mse10
 
