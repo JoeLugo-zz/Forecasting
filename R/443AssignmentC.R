@@ -1,7 +1,13 @@
 # 443 Assignment
+# c)
 
-numb = 30
+numb = 100 #Number of times process is repeated
 
+# arch.sim: ARCH(1) function copied from slides
+# n = number of ARCH(1) steps run
+# omega = alpha 0 value for ARCH(1)
+# alpha1 = alpha 1 value for ARCH(1)
+# sigma = sigma value for ARCH(1)
 arch.sim <- function(n, omega, alpha1, sigma)
   {
   out <- sqrt(omega)
@@ -12,21 +18,33 @@ arch.sim <- function(n, omega, alpha1, sigma)
   out
   }
 
+# newARCH: Runs a new ARCH(1) given n, omega, and alpha1. We assume sigma = 1
+# n = number of ARCH(1) steps run
+# om = alpha 0 value for ARCH(1)
+# alp = alpha 1 value for ARCH(1)
 newARCH <- function(n,om,alp)
 {
   sim.arch <- arch.sim(n=n, omega = om, alpha1 = alp, sigma = sqrt(1))
   return(sim.arch)
 }
 
+#AICmatrix: uses min/max inputs of p & q and creates numb matrices of AICs from the models used to fit 
+#           ARCH(1) to ARMA(p,q). Finds the ARMA(p,q) model with the minimum AIC and uses that to predict
+#           10 steps ahead using the predict function. Outputs list of matricies, list of (p,q) values with
+#           the lowest AICs, forecasted values, and generated values.
+# n = number of ARCH(1) steps run
+# pstart = minimum p used in ARMA models used to fit
+# pfinish = maximum p used in ARMA models used to fit
+# qstart = minimum q used in ARMA models used to fit
+# qfinish = maximum q used in ARMA models used to fit
 AICmatrix <- function(n,pstart,pfinish,qstart,qfinish)
 {
-  
   output <- list(); model <- list(); mat <- list(); pqValues <- list(); forecast10 <- list()
   
   for (p in 1:numb)
   {
     # Generating simulated data from model 
-    model[[p]] <- newARCH(n,1,0.85)
+    model[[p]] <- newARCH(n,0.3,0.65)
     mat[[p]] <- matrix(nrow = pfinish + 1,ncol = qfinish + 1)
     dimnames(mat[[p]]) <- list(c(pstart:pfinish),c(qstart:qfinish))
     
@@ -54,15 +72,17 @@ AICmatrix <- function(n,pstart,pfinish,qstart,qfinish)
   return(out)
 }
 
+# Runs AICmatrix with 110 data points and with p & q values between 0-2
 out <- AICmatrix(110,0,2,0,2)
-matrices <- out[[1]]
-pqVals <- unlist(out[2])
-f10 <- out[[3]]
-models <- out[[4]]
+matrices <- out[[1]] # matrices of AICs
+pqVals <- unlist(out[2]) # pq values with lowest AICs
+f10 <- out[[3]] # forecasted values
+models <- out[[4]] # generated ARCH values
 names(matrices) <- pqVals
 
 s10 <- list()
 
+# Calculates SEs for each prediction
 for (i in 1:numb)
 {
   s10[[i]] <- (models[[i]][101:110] - f10[[i]])^2
@@ -70,11 +90,15 @@ for (i in 1:numb)
 
 sum10 <- c(0,0,0,0,0,0,0,0,0,0)
 
+# Sums SEs at each step
 for (i in 1:numb)
 {
   sum10 <- sum10 + s10[[i]]
 }
 
+# calculates MSE
 mse10 <- sum10/numb
+
+# MSE output
 mse10
 
