@@ -1,7 +1,7 @@
 # 443 Assignment
 # c)
 
-numb = 100 #Number of times process is repeated
+num = 120 #Number of times process is repeated
 
 # arch.sim: ARCH(1) function copied from slides
 # n = number of ARCH(1) steps run
@@ -33,11 +33,12 @@ newARCH <- function(n,om,alp)
 #           10 steps ahead using the predict function. Outputs list of matricies, list of (p,q) values with
 #           the lowest AICs, forecasted values, and generated values.
 # n = number of ARCH(1) steps run
+# numb = number of times process is repeated
 # pstart = minimum p used in ARMA models used to fit
 # pfinish = maximum p used in ARMA models used to fit
 # qstart = minimum q used in ARMA models used to fit
 # qfinish = maximum q used in ARMA models used to fit
-AICmatrix <- function(n,pstart,pfinish,qstart,qfinish)
+AICmatrix <- function(n,numb,pstart,pfinish,qstart,qfinish)
 {
   output <- list(); model <- list(); mat <- list(); pqValues <- list(); forecast10 <- list()
   
@@ -73,7 +74,7 @@ AICmatrix <- function(n,pstart,pfinish,qstart,qfinish)
 }
 
 # Runs AICmatrix with 110 data points and with p & q values between 0-2
-out <- AICmatrix(110,0,2,0,2)
+out <- AICmatrix(110,num,0,2,0,2)
 matrices <- out[[1]] # matrices of AICs
 pqVals <- unlist(out[2]) # pq values with lowest AICs
 f10 <- out[[3]] # forecasted values
@@ -83,7 +84,7 @@ names(matrices) <- pqVals
 s10 <- list()
 
 # Calculates SEs for each prediction
-for (i in 1:numb)
+for (i in 1:num)
 {
   s10[[i]] <- (models[[i]][101:110] - f10[[i]])^2
 }
@@ -91,14 +92,16 @@ for (i in 1:numb)
 sum10 <- c(0,0,0,0,0,0,0,0,0,0)
 
 # Sums SEs at each step
-for (i in 1:numb)
+for (i in 1:num)
 {
   sum10 <- sum10 + s10[[i]]
 }
 
 # calculates MSE
-mse10 <- sum10/numb
+mse10 <- sum10/num
 
-# MSE output
-mse10
+# MSEs for steps 1,2,5,10 isolated
+mylist <- mse10[c(1,2,5,10)]
 
+mylist
+table(pqVals)
