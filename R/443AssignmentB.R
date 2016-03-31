@@ -13,7 +13,7 @@ newARMAb <- function(n,ar)
 AICmatrixB <- function(n,numb,pstart,pfinish,qstart,qfinish)
 {
   
-  output <- list(); model <- list(); mat <- list(); pqValues <- list(); forecast10 <- list()
+  output <- list(); simData <- list(); mat <- list(); pqValues <- list(); forecast10 <- list()
   
   for (p in 1:numb)
   {
