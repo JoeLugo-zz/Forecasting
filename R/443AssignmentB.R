@@ -90,3 +90,13 @@ mylist <- mse10[c(1,2,5,10)]
 mylist
 table(pqVals)
 proportion
+
+# plots
+pqVals.df <- as.data.frame(table(pqVals))
+pqPlot10 <- ggplot(data=pqVals.df, aes(x=pqVals, y=Freq)) + geom_bar(stat="identity")
+pqPlot10 <- pqPlot10 + labs(title = "Suggested pq Values from ARMA(1,0) Data",x="pq Values",y="Frequency")
+
+mseNames <- c(1,2,5,10)
+mse.df <- data.frame(mseNames,mylist)
+msePlot10 <- ggplot(data = mse.df, aes(x=factor(mseNames), y=mylist)) + geom_bar(stat="identity")
+msePlot10 <- msePlot10 + labs(title = "MSE Values from ARMA(1,0) Data",x="Steps Ahead",y="MSE")
