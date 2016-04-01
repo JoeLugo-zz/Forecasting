@@ -108,10 +108,12 @@ mylist
 table(pqVals)
 
 # plots
+# Makes the pq plots 
 pqVals.df <- as.data.frame(table(pqVals))
 pqPlot1 <- ggplot(data=pqVals.df, aes(x=pqVals, y=Freq)) + geom_bar(stat="identity")
 pqPlot1 <- pqPlot1 + labs(title = "Suggested pq Values from ARCH(1) Data",x="pq Values",y="Frequency")
 
+# Makes the MSE plots
 mseNames <- c(1,2,5,10)
 mse.df <- data.frame(mseNames,mylist)
 msePlot1 <- ggplot(data = mse.df, aes(x=factor(mseNames), y=mylist)) + geom_bar(stat="identity")

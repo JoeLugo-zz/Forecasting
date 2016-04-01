@@ -4,12 +4,26 @@
 # Number of times process is repeated
 num = 120 
 
+# newARMAa: Runs a new ARMA(p,q) given n, ar, and ma. 
+# n = number of ARMA(p,q) steps run
+# ar = vector with coefficients for the AR portion
+# ma = vector with coefficients for the MA portion
 newARMAa <- function(n,ar,ma)
 {
   sim.arma <- arima.sim(n=n, list(ar=ar,ma=ma), sd = sqrt(1))
   return(sim.arma)
 }
 
+#AICmatrixA: uses min/max inputs of p & q and creates numb matrices of AICs from the models used to fit 
+#           ARMA(p,q). Finds the ARMA(p,q) model with the minimum AIC and uses that to predict
+#           10 steps ahead using the predict function. Outputs list of matricies, list of (p,q) values with
+#           the lowest AICs, forecasted values, and generated values.
+# n = number of ARMA(p,q) steps run
+# numb = number of times process is repeated
+# pstart = minimum p used in ARMA(p,q) models used to fit
+# pfinish = maximum p used in ARMA(p,q) models used to fit
+# qstart = minimum q used in ARMA(p,q) models used to fit
+# qfinish = maximum q used in ARMA(p,q) models used to fit
 AICmatrixA <- function(n,numb,pstart,pfinish,qstart,qfinish)
 {
   
@@ -92,10 +106,12 @@ table(pqVals)
 proportion
 
 # plot
+# Makes the pq plots 
 pqVals.df <- as.data.frame(table(pqVals))
 pqPlot11 <- ggplot(data=pqVals.df, aes(x=pqVals, y=Freq)) + geom_bar(stat="identity")
 pqPlot11 <- pqPlot11 + labs(title = "Suggested pq Values from ARMA(1,1) Data",x="pq Values",y="Frequency")
 
+# Makes the MSE plots
 mseNames <- c(1,2,5,10)
 mse.df <- data.frame(mseNames,mylist)
 msePlot11 <- ggplot(data = mse.df, aes(x=factor(mseNames), y=mylist)) + geom_bar(stat="identity")
